@@ -1,0 +1,183 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Status - mkz_uec25">
+  <div class="flex flex-col items-center justify-center min-h-screen text-center px-4 relative mt-16 mb-24">
+    <div class="w-full max-w-4xl flex flex-col items-center">
+      
+      <!-- STATS INTRO -->
+      <section class="w-full mb-16 px-4">
+        <h2 class="text-3xl font-bold mb-6 tracking-wider text-left relative pl-2" style="font-family: 'Galindo', sans-serif;">
+          <span class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#ff1493]"></span>
+          <span class="pl-4">MY STATUS</span>
+        </h2>
+        <div class="text-left pl-6 text-gray-300">
+          <p>これまでのGPA推移とTOEICスコアの軌跡です。</p>
+          <p class="text-[#ff1493] font-bold mt-2 text-sm">※プロット（点）をクリックすると当時の記事へ、カーソルを合わせると詳細が表示されます。</p>
+        </div>
+      </section>
+
+      <!-- GPA CHART -->
+      <section class="w-full mb-20 px-4">
+        <h3 class="text-2xl font-bold mb-4 text-left border-b border-white/20 pb-2">GPA 推移</h3>
+        <div class="bg-white/5 rounded-xl p-6 shadow-md border border-white/10 relative w-full aspect-video md:aspect-[21/9]">
+          <canvas id="gpaChart"></canvas>
+        </div>
+      </section>
+
+      <!-- TOEIC CHART -->
+      <section class="w-full px-4">
+        <h3 class="text-2xl font-bold mb-4 text-left border-b border-white/20 pb-2">TOEIC スコア推移</h3>
+        <div class="bg-white/5 rounded-xl p-6 shadow-md border border-white/10 relative w-full aspect-video md:aspect-[21/9]">
+          <canvas id="toeicChart"></canvas>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Chart.js CDN -->
+  <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script is:inline>
+    // GPAデータ
+    const gpaData = [
+      { date: '1年 前期', gpa: 2.125, url: 'https://note.com/mkz_uec25/n/ne7445231c55c?sub_rt=share_pw', info: '最初の学期' },
+      { date: '1年 後期', gpa: 2.6118, url: 'https://note.com/mkz_uec25/n/ne7445231c55c?sub_rt=share_pw', info: '' },
+      { date: '2年 前期', gpa: null, url: '', info: '' },
+      { date: '2年 後期', gpa: null, url: '', info: '' },
+      { date: '3年 前期', gpa: null, url: '', info: '' },
+      { date: '3年 後期', gpa: null, url: '', info: '' },
+      { date: '4年 前期', gpa: null, url: '', info: '' },
+      { date: '4年 後期', gpa: null, url: '', info: '' }
+    ];
+
+    // TOEICダミーデータ
+    const toeicData = [
+      { date: '2024/05/20', score: 450, url: 'https://note.com/mkz_uec25/n/ne7445231c55c?sub_rt=share_pw', info: '初めてのTOEIC受験、時間配分に苦労' },
+      { date: '2024/10/12', score: 620, url: 'https://note.com/mkz_uec25/n/ne7445231c55c?sub_rt=share_pw', info: '単語帳を一周してベースアップ' },
+      { date: '2025/03/05', score: 710, url: 'https://note.com/mkz_uec25/n/ne7445231c55c?sub_rt=share_pw', info: 'リスニング強化合宿の成果が出た' },
+      { date: '2025/08/21', score: 850, url: 'https://note.com/mkz_uec25/n/ne7445231c55c?sub_rt=share_pw', info: '目標の800点突破！大歓喜' }
+    ];
+
+    // 共通のフォント色(ダークモード対応)
+    Chart.defaults.color = '#cbd5e1'; 
+    Chart.defaults.font.family = "'Kosugi Maru', 'Zen Maru Gothic', sans-serif";
+
+    // --- GPA Chart ---
+    const ctxGpa = document.getElementById('gpaChart').getContext('2d');
+    new Chart(ctxGpa, {
+      type: 'line',
+      data: {
+        labels: gpaData.map(d => d.date),
+        datasets: [{
+          label: 'GPA',
+          data: gpaData.map(d => d.gpa),
+          borderColor: '#ff1493',
+          backgroundColor: '#ff1493',
+          tension: 0,
+          pointRadius: 6,
+          pointHoverRadius: 9,
+          pointBackgroundColor: '#ffffff',
+          pointBorderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: (e, activeEls) => {
+          if (activeEls.length > 0) {
+            const index = activeEls[0].index;
+            window.open(gpaData[index].url, '_blank');
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+            titleFont: { size: 14, weight: 'bold' },
+            bodyFont: { size: 13 },
+            padding: 12,
+            callbacks: {
+              title: (ctx) => `${gpaData[ctx[0].dataIndex].date}のGPA: ${gpaData[ctx[0].dataIndex].gpa}`,
+              label: (ctx) => `${gpaData[ctx.dataIndex].info}`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 4.0,
+            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // --- TOEIC Chart ---
+    const ctxToeic = document.getElementById('toeicChart').getContext('2d');
+    new Chart(ctxToeic, {
+      type: 'line',
+      data: {
+        labels: toeicData.map(d => d.date),
+        datasets: [{
+          label: 'TOEIC Score',
+          data: toeicData.map(d => d.score),
+          borderColor: '#3b82f6', // TOEIC用はブルー系に
+          backgroundColor: '#3b82f6',
+          tension: 0,
+          pointRadius: 6,
+          pointHoverRadius: 9,
+          pointBackgroundColor: '#ffffff',
+          pointBorderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: (e, activeEls) => {
+          if (activeEls.length > 0) {
+            const index = activeEls[0].index;
+            window.open(toeicData[index].url, '_blank');
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+            titleFont: { size: 14, weight: 'bold' },
+            bodyFont: { size: 13 },
+            padding: 12,
+            callbacks: {
+              title: (ctx) => `${toeicData[ctx[0].dataIndex].date}受験 スコア: ${toeicData[ctx[0].dataIndex].score}`,
+              label: (ctx) => `${toeicData[ctx.dataIndex].info}`
+            }
+          }
+        },
+        scales: {
+          y: {
+            min: 0,
+            max: 990,
+            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // ホバー時にカーソルを指マークに変える処理（UX向上用）
+    const handleCursor = (e, ctx) => {
+      e.native.target.style.cursor = ctx[0] ? 'pointer' : 'default';
+    };
+    
+    // オプションにホバー処理を追加
+    Chart.instances[0].options.onHover = handleCursor;
+    Chart.instances[1].options.onHover = handleCursor;
+  </script>
+</BaseLayout>

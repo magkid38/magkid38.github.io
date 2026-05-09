@@ -1,0 +1,302 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GameCard from '../components/GameCard.astro';
+import { Image } from 'astro:assets';
+import Img01 from '../images/fest_chie_37ketsu.jpg';
+---
+
+<BaseLayout title="Games - mkz_uec25">
+  <div class="max-w-6xl mx-auto px-4 mt-16 mb-24">
+
+    <!-- ページ見出し -->
+    <h2 class="text-3xl font-bold mb-4 tracking-wider text-left relative pl-2" style="font-family: 'Galindo', sans-serif;">
+      <span class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#ff1493]"></span>
+      <span class="pl-4">GAMES</span>
+    </h2>
+    <p class="text-gray-400 mb-10 pl-6">お気に入りのゲーム達とスクリーンショットギャラリー</p>
+
+    <!-- ゲーム一覧 -->
+    <div class="games-grid">
+
+      <GameCard
+        title="Splatoon 2 / 3"
+        playtime="累計 約6750時間"
+        description="任天堂のアクションシューティングゲーム。塗って撃って潜るインクアクションが最高。Splatoon2で約4750時間、Splatoon3で約2000時間やりこみました。フェスやガチマッチに明け暮れる日々…。"
+        screenshots={[
+          { src: Img01, alt: 'Splatoon フェス 37傑', caption: 'Fes 37 Ketsu!' },
+          { src: 'https://placehold.jp/1a1a2e/ff1493/600x338.png?text=Splatoon+SS+2', alt: 'Splatoon Screenshot 2', caption: 'ガチマッチ' },
+          { src: 'https://placehold.jp/1a1a2e/ff1493/600x338.png?text=Splatoon+SS+3', alt: 'Splatoon Screenshot 3', caption: 'ナワバリバトル' },
+          { src: 'https://placehold.jp/1a1a2e/ff1493/600x338.png?text=Splatoon+SS+4', alt: 'Splatoon Screenshot 4', caption: 'サーモンラン' },
+        ]}
+        accent="#a3e635"
+      />
+
+      <GameCard
+        title="スーパーマリオ オデッセイ"
+        playtime="約120時間"
+        description="マリオの新しい冒険が楽しめる作品で、様々な国を旅することができました。多彩なステージとユニークな帽子の能力が楽しかったです。ムーン全回収を目指してやりこみました。"
+        screenshots={[
+          { src: 'https://placehold.jp/1a1a2e/f97316/600x338.png?text=Odyssey+SS+1', alt: 'Mario Odyssey Screenshot 1', caption: 'ニュードンクシティ' },
+          { src: 'https://placehold.jp/1a1a2e/f97316/600x338.png?text=Odyssey+SS+2', alt: 'Mario Odyssey Screenshot 2', caption: '海の国' },
+        ]}
+        accent="#f97316"
+      />
+
+      <GameCard
+        title="ファイナルファンタジー VII リメイク"
+        playtime="約80時間"
+        description="クラシックなRPGのリメイクで、グラフィックとストーリーが大幅に強化されていました。特にキャラクターの深掘りが素晴らしかったです。戦闘システムもアクションとコマンドの融合が見事。"
+        screenshots={[
+          { src: 'https://placehold.jp/1a1a2e/60a5fa/600x338.png?text=FF7R+SS+1', alt: 'FF7 Remake Screenshot 1', caption: 'ミッドガル' },
+          { src: 'https://placehold.jp/1a1a2e/60a5fa/600x338.png?text=FF7R+SS+2', alt: 'FF7 Remake Screenshot 2', caption: 'バトルシーン' },
+          { src: 'https://placehold.jp/1a1a2e/60a5fa/600x338.png?text=FF7R+SS+3', alt: 'FF7 Remake Screenshot 3', caption: 'フィールド' },
+        ]}
+        accent="#60a5fa"
+      />
+
+    </div>
+
+  </div>
+
+  <!-- モーダル（スクリーンショット拡大表示） -->
+  <div id="screenshotModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <button id="modalClose" class="modal-close" aria-label="閉じる">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <button id="modalPrev" class="modal-nav modal-nav-prev" aria-label="前へ">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <img id="modalImage" class="modal-image" src="" alt="" />
+      <button id="modalNext" class="modal-nav modal-nav-next" aria-label="次へ">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      <div id="modalCaption" class="modal-caption"></div>
+      <div id="modalCounter" class="modal-counter"></div>
+    </div>
+  </div>
+
+  <style>
+    /* ゲームカードグリッド */
+    .games-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* === Modal Styles === */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-image {
+      max-width: 85vw;
+      max-height: 80vh;
+      border-radius: 0.75rem;
+      object-fit: contain;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-close {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 10;
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 9999px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.1);
+    }
+
+    .modal-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 9999px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-nav:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .modal-nav-prev { left: 1.5rem; }
+    .modal-nav-next { right: 1.5rem; }
+
+    .modal-caption {
+      position: fixed;
+      bottom: 4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      backdrop-filter: blur(4px);
+      white-space: nowrap;
+    }
+
+    .modal-counter {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.75rem;
+      font-family: monospace;
+    }
+
+    @media (max-width: 640px) {
+      .modal-nav-prev { left: 0.75rem; }
+      .modal-nav-next { right: 0.75rem; }
+      .modal-close { top: 0.75rem; right: 0.75rem; }
+      .modal-image {
+        max-width: 95vw;
+      }
+    }
+  </style>
+
+  <script is:inline>
+    // --- Screenshot Modal Logic ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('screenshotModal');
+      const modalImage = document.getElementById('modalImage');
+      const modalCaption = document.getElementById('modalCaption');
+      const modalCounter = document.getElementById('modalCounter');
+      const modalClose = document.getElementById('modalClose');
+      const modalPrev = document.getElementById('modalPrev');
+      const modalNext = document.getElementById('modalNext');
+
+      let currentScreenshots = [];
+      let currentIndex = 0;
+
+      // Collect screenshot data per game
+      function getGameScreenshots(gameName) {
+        const buttons = document.querySelectorAll(`button[data-game="${gameName}"]`);
+        return Array.from(buttons).map(btn => {
+          const img = btn.querySelector('img');
+          const captionEl = btn.querySelector('span');
+          return {
+            src: img ? img.src : '',
+            alt: img ? img.alt : '',
+            caption: captionEl ? captionEl.textContent : ''
+          };
+        });
+      }
+
+      function showImage(index) {
+        if (index < 0 || index >= currentScreenshots.length) return;
+        currentIndex = index;
+        const shot = currentScreenshots[currentIndex];
+        modalImage.src = shot.src;
+        modalImage.alt = shot.alt;
+        modalCaption.textContent = shot.caption || '';
+        modalCaption.style.display = shot.caption ? 'block' : 'none';
+        modalCounter.textContent = `${currentIndex + 1} / ${currentScreenshots.length}`;
+
+        // Show/hide nav buttons
+        modalPrev.style.display = currentScreenshots.length > 1 ? 'flex' : 'none';
+        modalNext.style.display = currentScreenshots.length > 1 ? 'flex' : 'none';
+      }
+
+      function openModal(gameName, index) {
+        currentScreenshots = getGameScreenshots(gameName);
+        showImage(index);
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      // Attach click handlers to screenshot thumbnails
+      document.querySelectorAll('.screenshot-thumb').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const gameName = btn.getAttribute('data-game');
+          const index = parseInt(btn.getAttribute('data-index'), 10);
+          openModal(gameName, index);
+        });
+      });
+
+      modalClose.addEventListener('click', closeModal);
+      modalPrev.addEventListener('click', () => showImage(currentIndex - 1));
+      modalNext.addEventListener('click', () => showImage(currentIndex + 1));
+
+      // Close on backdrop click
+      modal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+
+      // Keyboard controls
+      document.addEventListener('keydown', (e) => {
+        if (!modal.classList.contains('active')) return;
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
+        if (e.key === 'ArrowRight') showImage(currentIndex + 1);
+      });
+    });
+  </script>
+</BaseLayout>
