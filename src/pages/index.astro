@@ -55,37 +55,34 @@ import ArticleCard from '../components/ArticleCard.astro';
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
         <!-- Card 1 -->
         <ArticleCard 
-          title="激動の電通大1年を振り返ってみる"
+          title="数弱の転類体験記2026"
           date="2026/03/02"
           imageUrl="https://placehold.jp/3d4070/ffffff/600x400.png?text=1"
-          url="#"
-          source="LOCAL"
+          url="https://note.com/mkz_uec25/n/nd386b79bed6e?sub_rt=share_sb"
+          source="NOTE"
         />
         <!-- Card 2 -->
         <ArticleCard 
-          title="【GitHub】GitHub Actionsで安定したプロフィールREADMEを錬成してみた"
+          title="【#uec_review】2年 Bクラス 前期"
           date="2026/02/26"
           imageUrl="https://placehold.jp/5d4070/ffffff/600x400.png?text=2"
           url="https://note.com/mkz_uec25/n/ne7445231c55c?sub_rt=share_pw"
-          source="NOTE"
-        />
-        <!-- Card 3 -->
-        <ArticleCard 
-          title="トラマトのホームページ、爆誕"
-          date="2026/01/02"
-          imageUrl="https://placehold.jp/405d70/ffffff/600x400.png?text=3"
-          url="#"
           source="LOCAL"
         />
       </div>
     </div>
 
     <!-- About Me Section -->
-    <div class="w-full max-w-sm">
-      <h2 class="text-xl font-bold mb-6 tracking-wider text-left pl-2 relative">
-        <span class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5" style="background-color: var(--text-primary);"></span>
-        ABOUT ME
-      </h2>
+    <div class="w-full max-w-5xl mb-32">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 pl-2 pr-2 gap-4">
+        <h2 class="text-3xl font-bold tracking-wider text-left relative" style="font-family: 'Galindo', sans-serif;">
+          <span class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#ff1493]"></span>
+          <span class="pl-4">ABOUT ME</span>
+        </h2>
+        <a href="/profile" class="view-all-btn text-sm font-bold py-2 px-4 rounded-full transition-colors flex items-center justify-center">
+          詳しくはこちら <span class="ml-1">&rarr;</span>
+        </a>
+      </div>
       <div class="space-y-3 text-sm text-left pl-2" style="color: var(--text-secondary);">
         <p>いろんな技術を気ままに勉強中。</p>
         <p>現在 UEC25 Ⅱ類 所属。</p>
