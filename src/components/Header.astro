@@ -12,13 +12,13 @@ const navItems = [
 ];
 ---
 
-<header class="header-bar py-4 px-6 shadow-md relative z-50">
-  <div class="container mx-auto flex items-center justify-between">
+<header class="header-bar">
+  <div class="header-inner">
     <!-- 左側 (バランス確保のための空要素) -->
-    <div class="flex-1 hidden md:block"></div>
+    <div class="header-spacer hidden md:block"></div>
 
     <!-- 中央ナビゲーション (モバイルでは非表示) -->
-    <nav class="hidden md:flex justify-center space-x-8 flex-1">
+    <nav class="hidden md:flex justify-center space-x-1 flex-1">
       {navItems.map((item) => {
         const isActive = item.href === '/' 
           ? pathname === '/' 
@@ -27,42 +27,37 @@ const navItems = [
         return (
           <a 
             href={item.href} 
-            class={`relative pb-2 text-lg font-bold transition-colors duration-200 ${
-              isActive ? 'text-[#ff1493]' : 'nav-link'
-            }`}
+            class={`nav-item ${isActive ? 'nav-item-active' : ''}`}
           >
             {item.name}
-            {isActive && (
-              <div class="absolute bottom-0 left-0 w-full h-1 bg-[#ff1493] rounded-full" />
-            )}
           </a>
         );
       })}
     </nav>
     
     <!-- 右側ボタン群 (Theme / Menu) -->
-    <div class="flex items-center space-x-2 md:space-x-4 flex-1 justify-end">
+    <div class="flex items-center space-x-2 md:space-x-3 flex-1 justify-end">
       <!-- テーマ切替ボタン -->
-      <button id="theme-toggle" class="p-2 hover:bg-white/10 rounded-full transition" aria-label="テーマ切替">
+      <button id="theme-toggle" class="theme-btn" aria-label="テーマ切替">
         <!-- 太陽アイコン (ダーク時に表示 → ライトに切替) -->
-        <svg id="icon-sun" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
         </svg>
         <!-- 月アイコン (ライト時に表示 → ダークに切替) -->
-        <svg id="icon-moon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="icon-moon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
         </svg>
       </button>
       <!-- ハンバーガーメニュー (モバイルのみ表示) -->
-      <button id="mobile-menu-btn" class="p-2 hover:bg-white/10 rounded-full transition md:hidden">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      <button id="mobile-menu-btn" class="theme-btn md:hidden">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
       </button>
     </div>
   </div>
 
   <!-- モバイルメニュー (デフォルトは非表示) -->
-  <nav id="mobile-menu" class="hidden md:hidden mt-4 pb-2 border-t pt-4" style="border-color: var(--border-card);">
-    <div class="flex flex-col space-y-3">
+  <nav id="mobile-menu" class="mobile-menu hidden md:hidden">
+    <div class="flex flex-col space-y-1 px-2">
       {navItems.map((item) => {
         const isActive = item.href === '/' 
           ? pathname === '/' 
@@ -71,9 +66,7 @@ const navItems = [
         return (
           <a 
             href={item.href} 
-            class={`px-4 py-2 rounded-lg text-base font-bold transition-colors duration-200 ${
-              isActive ? 'text-[#ff1493] mobile-nav-active' : 'nav-link mobile-nav-link'
-            }`}
+            class={`mobile-nav-item ${isActive ? 'mobile-nav-item-active' : ''}`}
           >
             {item.name}
           </a>
@@ -85,38 +78,118 @@ const navItems = [
 
 <style>
   .header-bar {
-    background-color: var(--bg-header);
-    color: var(--text-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
-    border-bottom: 1px solid var(--border-card);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: 0.75rem 1.5rem;
+    background: var(--bg-header);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    transition: background-color 0.3s ease;
   }
 
-  .nav-link {
+  .header-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-spacer {
+    flex: 1;
+  }
+
+  /* ナビアイテム */
+  .nav-item {
+    position: relative;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
     color: var(--text-muted);
+    border-radius: 0.5rem;
+    transition: color 0.2s ease, background-color 0.2s ease;
   }
-  .nav-link:hover {
+
+  .nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--accent-gradient);
+    border-radius: 1px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav-item:hover {
     color: var(--text-primary);
   }
 
-  .mobile-nav-link:hover {
-    background-color: var(--bg-card);
-  }
-  .mobile-nav-active {
-    background-color: var(--bg-card);
+  .nav-item:hover::after {
+    width: 60%;
+    left: 20%;
   }
 
-  #theme-toggle {
-    color: var(--text-primary);
-  }
-  #theme-toggle:hover {
-    background-color: var(--bg-card);
+  .nav-item-active {
+    color: var(--accent);
   }
 
-  #mobile-menu-btn {
-    color: var(--text-primary);
+  .nav-item-active::after {
+    width: 60%;
+    left: 20%;
+    background: var(--accent-gradient);
   }
-  #mobile-menu-btn:hover {
-    background-color: var(--bg-card);
+
+  /* テーマボタン */
+  .theme-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.5rem;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .theme-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border-color: var(--glass-border);
+  }
+
+  /* モバイルメニュー */
+  .mobile-menu {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--glass-border);
+  }
+
+  .mobile-nav-item {
+    display: block;
+    padding: 0.625rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+  }
+
+  .mobile-nav-item:hover {
+    color: var(--text-primary);
+    background: var(--bg-card);
+  }
+
+  .mobile-nav-item-active {
+    color: var(--accent);
+    background: var(--bg-card);
   }
 </style>
 

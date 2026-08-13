@@ -8,15 +8,15 @@
 /* ダークモード（デフォルト） */
 :root {
   --bg-primary: #0B0E14;
-  --bg-header: #0d1117;
+  --bg-header: rgba(11, 14, 20, 0.8);
   --bg-card: rgba(255, 255, 255, 0.05);
-  --bg-card-hover: rgba(255, 255, 255, 0.08);
+  --bg-card-hover: rgba(255, 255, 255, 0.1);
   --bg-card-solid: #1a1f2e;
-  --border-card: rgba(255, 255, 255, 0.1);
+  --border-card: rgba(255, 255, 255, 0.08);
   --border-hover: rgba(255, 255, 255, 0.2);
   --text-primary: #ffffff;
   --text-secondary: #cbd5e1;
-  --text-muted: #9ca3af;
+  --text-muted: #64748b;
   --text-on-card: #ffffff;
   --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
   --shadow-card-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
@@ -28,23 +28,36 @@
   --article-card-text: #1f2937;
   --article-card-date: #9ca3af;
   --article-card-border: #f3f4f6;
+
+  /* アクセント */
+  --accent: #ff1493;
+  --accent-light: #ff69b4;
+  --accent-gradient: linear-gradient(135deg, #ff1493, #8b5cf6);
+  --accent-gradient-text: linear-gradient(135deg, #ff1493, #a855f7, #6366f1);
+  --glow-color: rgba(255, 20, 147, 0.3);
+  --glow-color-strong: rgba(255, 20, 147, 0.5);
+
+  /* グラスモーフィズム */
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 /* ライトモード */
 [data-theme="light"] {
-  --bg-primary: #f5f5f7;
-  --bg-header: #ffffff;
+  --bg-primary: #f8f9fc;
+  --bg-header: rgba(255, 255, 255, 0.85);
   --bg-card: rgba(0, 0, 0, 0.03);
   --bg-card-hover: rgba(0, 0, 0, 0.06);
   --bg-card-solid: #ffffff;
-  --border-card: rgba(0, 0, 0, 0.1);
-  --border-hover: rgba(0, 0, 0, 0.2);
+  --border-card: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.15);
   --text-primary: #1a1a2e;
   --text-secondary: #4a5568;
-  --text-muted: #6b7280;
+  --text-muted: #94a3b8;
   --text-on-card: #1a1a2e;
-  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
-  --shadow-card-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
   --input-bg: #f1f5f9;
   --input-border: #cbd5e1;
   --overlay-bg: rgba(0, 0, 0, 0.6);
@@ -53,17 +66,137 @@
   --article-card-text: #1f2937;
   --article-card-date: #6b7280;
   --article-card-border: #e5e7eb;
+
+  --glow-color: rgba(255, 20, 147, 0.15);
+  --glow-color-strong: rgba(255, 20, 147, 0.25);
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
+
+/* ========================================
+   グローバルベーススタイル
+   ======================================== */
 
 html {
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  font-family: 'Inter', 'Zen Maru Gothic', 'Kosugi Maru', system-ui, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* ========================================
+   ユーティリティクラス
+   ======================================== */
+
+/* グラスモーフィズムカード */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* グラデーションテキスト */
+.gradient-text {
+  background: var(--accent-gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ページ見出し共通スタイル */
+.page-heading {
+  font-family: 'Galindo', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.page-heading::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 1.5rem;
+  background: var(--accent-gradient);
+  border-radius: 2px;
+}
+
+/* ========================================
+   アニメーション
+   ======================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes bounce-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* スクロールフェードイン */
+.section-fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section-fade-in.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 遅延付きフェードイン */
+.section-fade-in.delay-1 { transition-delay: 0.1s; }
+.section-fade-in.delay-2 { transition-delay: 0.2s; }
+.section-fade-in.delay-3 { transition-delay: 0.3s; }
+
+/* ========================================
+   フォントクラス
+   ======================================== */
 
 .kosugi-maru-regular {
   font-family: "Kosugi Maru", sans-serif;

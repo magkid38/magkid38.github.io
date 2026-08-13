@@ -1,0 +1,80 @@
+---
+interface Props {
+  title: string;
+  linkText?: string;
+  linkHref?: string;
+  subtitle?: string;
+}
+
+const { title, linkText, linkHref, subtitle } = Astro.props;
+---
+
+<div class="section-heading-wrapper section-fade-in">
+  <div class="section-heading-row">
+    <h2 class="page-heading text-2xl sm:text-3xl">{title}</h2>
+    {linkText && linkHref && (
+      <a href={linkHref} class="section-link">
+        {linkText}
+        <svg class="section-link-arrow" viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+          <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+        </svg>
+      </a>
+    )}
+  </div>
+  {subtitle && (
+    <p class="section-subtitle">{subtitle}</p>
+  )}
+</div>
+
+<style>
+  .section-heading-wrapper {
+    margin-bottom: 2rem;
+  }
+
+  .section-heading-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .section-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+  }
+
+  .section-link:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #ffffff;
+    box-shadow: 0 0 20px var(--glow-color);
+  }
+
+  .section-link-arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .section-link:hover .section-link-arrow {
+    transform: translateX(3px);
+  }
+
+  .section-subtitle {
+    margin-top: 0.75rem;
+    padding-left: 1.25rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+</style>

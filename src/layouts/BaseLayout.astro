@@ -8,12 +8,13 @@ const { title = "デフォルトタイトル" } = Astro.props;
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="MKZ's personal website - Articles, Games, Profile and more." />
   <link rel="icon" href="/favicon.ico" />
   <title>{title}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@400;700;900&family=Galindo&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dela+Gothic+One&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@400;700;900&family=Galindo&display=swap" rel="stylesheet">
   <script is:inline>
     // FOUC防止: ページ描画前にテーマを適用
     (function() {
@@ -25,10 +26,30 @@ const { title = "デフォルトタイトル" } = Astro.props;
 <body class="flex flex-col min-h-screen">
   <Header /> 
 
-  <main class="container mx-auto p-4 flex-grow">
+  <main class="flex-grow">
     <slot /> 
   </main>
 
   <Footer />
+
+  <script is:inline>
+    // Intersection Observer for scroll fade-in
+    (function() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -40px 0px'
+      });
+
+      document.querySelectorAll('.section-fade-in').forEach(el => {
+        observer.observe(el);
+      });
+    })();
+  </script>
 </body>
 </html>

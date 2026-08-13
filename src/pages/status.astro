@@ -1,40 +1,36 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
 ---
 
 <BaseLayout title="Status - mkz_uec25">
-  <div class="flex flex-col items-center justify-center min-h-screen text-center px-4 relative mt-16 mb-24">
-    <div class="w-full max-w-4xl flex flex-col items-center">
-      
-      <!-- STATS INTRO -->
-      <section class="w-full mb-16 px-4">
-        <h2 class="text-3xl font-bold mb-6 tracking-wider text-left relative pl-2" style="font-family: 'Galindo', sans-serif;">
-          <span class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#ff1493]"></span>
-          <span class="pl-4">MY STATUS</span>
-        </h2>
-        <div class="text-left pl-6 text-gray-300">
-          <p>これまでのGPA推移とTOEICスコアの軌跡です。</p>
-          <p class="text-[#ff1493] font-bold mt-2 text-sm">※プロット（点）をクリックすると当時の記事へ、カーソルを合わせると詳細が表示されます。</p>
-        </div>
-      </section>
+  <div class="max-w-4xl mx-auto px-4 pt-20 pb-24">
 
-      <!-- GPA CHART -->
-      <section class="w-full mb-20 px-4">
-        <h3 class="text-2xl font-bold mb-4 text-left border-b border-white/20 pb-2">GPA 推移</h3>
-        <div class="bg-white/5 rounded-xl p-6 shadow-md border border-white/10 relative w-full aspect-video md:aspect-[21/9]">
-          <canvas id="gpaChart"></canvas>
-        </div>
-      </section>
+    <!-- STATS INTRO -->
+    <SectionHeading 
+      title="MY STATUS" 
+      subtitle="これまでのGPA推移とTOEICスコアの軌跡です。"
+    />
+    <p class="status-note section-fade-in">
+      ※プロット（点）をクリックすると当時の記事へ、カーソルを合わせると詳細が表示されます。
+    </p>
 
-      <!-- TOEIC CHART -->
-      <section class="w-full px-4">
-        <h3 class="text-2xl font-bold mb-4 text-left border-b border-white/20 pb-2">TOEIC スコア推移</h3>
-        <div class="bg-white/5 rounded-xl p-6 shadow-md border border-white/10 relative w-full aspect-video md:aspect-[21/9]">
-          <canvas id="toeicChart"></canvas>
-        </div>
-      </section>
+    <!-- GPA CHART -->
+    <section class="chart-section section-fade-in">
+      <h3 class="chart-title">GPA 推移</h3>
+      <div class="chart-container glass-card">
+        <canvas id="gpaChart"></canvas>
+      </div>
+    </section>
 
-    </div>
+    <!-- TOEIC CHART -->
+    <section class="chart-section section-fade-in delay-1">
+      <h3 class="chart-title">TOEIC スコア推移</h3>
+      <div class="chart-container glass-card">
+        <canvas id="toeicChart"></canvas>
+      </div>
+    </section>
+
   </div>
 
   <!-- Chart.js CDN -->
@@ -62,8 +58,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     ];
 
     // 共通のフォント色(ダークモード対応)
-    Chart.defaults.color = '#cbd5e1'; 
-    Chart.defaults.font.family = "'Kosugi Maru', 'Zen Maru Gothic', sans-serif";
+    Chart.defaults.color = '#94a3b8'; 
+    Chart.defaults.font.family = "'Inter', 'Kosugi Maru', 'Zen Maru Gothic', sans-serif";
 
     // --- GPA Chart ---
     const ctxGpa = document.getElementById('gpaChart').getContext('2d');
@@ -75,12 +71,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           label: 'GPA',
           data: gpaData.map(d => d.gpa),
           borderColor: '#ff1493',
-          backgroundColor: '#ff1493',
-          tension: 0,
+          backgroundColor: 'rgba(255, 20, 147, 0.1)',
+          fill: true,
+          tension: 0.4,
           pointRadius: 6,
-          pointHoverRadius: 9,
+          pointHoverRadius: 10,
           pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#ff1493',
           pointBorderWidth: 2,
+          pointHoverBorderWidth: 3,
+          borderWidth: 2,
         }]
       },
       options: {
@@ -89,16 +89,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         onClick: (e, activeEls) => {
           if (activeEls.length > 0) {
             const index = activeEls[0].index;
-            window.open(gpaData[index].url, '_blank');
+            if (gpaData[index].url) window.open(gpaData[index].url, '_blank');
           }
         },
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: 'rgba(15, 23, 42, 0.9)',
-            titleFont: { size: 14, weight: 'bold' },
-            bodyFont: { size: 13 },
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleFont: { size: 13, weight: 'bold' },
+            bodyFont: { size: 12 },
             padding: 12,
+            cornerRadius: 8,
+            borderColor: 'rgba(255, 20, 147, 0.3)',
+            borderWidth: 1,
             callbacks: {
               title: (ctx) => `${gpaData[ctx[0].dataIndex].date}のGPA: ${gpaData[ctx[0].dataIndex].gpa}`,
               label: (ctx) => `${gpaData[ctx.dataIndex].info}`
@@ -109,10 +112,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           y: {
             beginAtZero: true,
             max: 4.0,
-            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+            grid: { color: 'rgba(148, 163, 184, 0.08)' },
+            border: { color: 'transparent' }
           },
           x: {
-            grid: { display: false }
+            grid: { display: false },
+            border: { color: 'transparent' }
           }
         }
       }
@@ -127,13 +132,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         datasets: [{
           label: 'TOEIC Score',
           data: toeicData.map(d => d.score),
-          borderColor: '#3b82f6', // TOEIC用はブルー系に
-          backgroundColor: '#3b82f6',
-          tension: 0,
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99, 102, 241, 0.1)',
+          fill: true,
+          tension: 0.4,
           pointRadius: 6,
-          pointHoverRadius: 9,
+          pointHoverRadius: 10,
           pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#6366f1',
           pointBorderWidth: 2,
+          pointHoverBorderWidth: 3,
+          borderWidth: 2,
         }]
       },
       options: {
@@ -142,16 +151,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         onClick: (e, activeEls) => {
           if (activeEls.length > 0) {
             const index = activeEls[0].index;
-            window.open(toeicData[index].url, '_blank');
+            if (toeicData[index].url) window.open(toeicData[index].url, '_blank');
           }
         },
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: 'rgba(15, 23, 42, 0.9)',
-            titleFont: { size: 14, weight: 'bold' },
-            bodyFont: { size: 13 },
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleFont: { size: 13, weight: 'bold' },
+            bodyFont: { size: 12 },
             padding: 12,
+            cornerRadius: 8,
+            borderColor: 'rgba(99, 102, 241, 0.3)',
+            borderWidth: 1,
             callbacks: {
               title: (ctx) => `${toeicData[ctx[0].dataIndex].date}受験 スコア: ${toeicData[ctx[0].dataIndex].score}`,
               label: (ctx) => `${toeicData[ctx.dataIndex].info}`
@@ -162,10 +174,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           y: {
             min: 0,
             max: 990,
-            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+            grid: { color: 'rgba(148, 163, 184, 0.08)' },
+            border: { color: 'transparent' }
           },
           x: {
-            grid: { display: false }
+            grid: { display: false },
+            border: { color: 'transparent' }
           }
         }
       }
@@ -180,4 +194,41 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     Chart.instances[0].options.onHover = handleCursor;
     Chart.instances[1].options.onHover = handleCursor;
   </script>
+
+  <style>
+    .status-note {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: -0.5rem;
+      margin-bottom: 3rem;
+      padding-left: 1.25rem;
+    }
+
+    .chart-section {
+      margin-bottom: 3rem;
+    }
+
+    .chart-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--text-primary);
+    }
+
+    .chart-container {
+      padding: 1.5rem;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+    }
+
+    @media (min-width: 768px) {
+      .chart-container {
+        aspect-ratio: 21 / 9;
+      }
+    }
+  </style>
 </BaseLayout>
